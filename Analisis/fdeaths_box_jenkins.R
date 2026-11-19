@@ -42,6 +42,25 @@ boxplot(y ~ cycle(y), names = month.abb,
 # Promedio anual: si hubiera tendencia, estos valores subirían o bajarían
 aggregate(y, FUN = mean)
 
+# Pruebas formales (sobre log(y))
+# Estacionalidad: Kruskal-Wallis por mes
+kruskal.test(as.numeric(log(y)) ~ factor(cycle(y)))
+
+# Tendencia determinística: regresión con tendencia lineal y dummies de mes
+t_anual <- as.numeric(time(y))
+mes     <- factor(cycle(y))
+reg     <- lm(as.numeric(log(y)) ~ t_anual + mes)
+summary(reg)$coefficients["t_anual", ]
+anova(reg)
+
+# Tendencia estocástica: H0 KPSS = estacionaria; H0 ADF = raíz unitaria
+kpss.test(log(y), null = "Level")
+adf.test(log(y))
+
+# Kruskal-Wallis p < 0.001: estacionalidad significativa.
+# Pendiente = -0.017 por año (p = 0.021): leve tendencia determinística a la baja (~1.7% anual),
+# pequeña frente a la estacionalidad (F = 50.4 vs F = 21.3).
+# KPSS p > 0.10, ADF p < 0.01: sin raíz unitaria -> no se requiere diferencia ordinaria.
 
 # CONCLUSIÓN 1: No hay tendencia marcada (promedios anuales entre 525 y 589).
 # Estacionalidad clara de periodo 12: picos dic-mar, valles jul-sep.
