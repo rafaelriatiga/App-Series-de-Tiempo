@@ -132,6 +132,10 @@ head(ic[order(ic$BIC), ], 5)
 # Referencia: selección automática
 auto.arima(yt)
 
+# AIC: SARIMA(0,0,1)(0,1,1)_12 = -74.55. BIC: SARIMA(0,0,0)(0,1,1)_12 = -69.75.
+# Diferencia de AIC < 2: modelos prácticamente equivalentes. Q = 1 en todos los mejores.
+# auto.arima: SARIMA(0,0,0)(2,1,0)_12 con drift.
+
 # ------------------------------------------------------------
 # 5. ESTIMACIÓN
 # ------------------------------------------------------------
